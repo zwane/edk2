@@ -89,4 +89,8 @@ SET gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize = $(BLOCK_SIZ
 SET gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageFtwSpareBase = gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageFtwWorkingBase + gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
 SET gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize = $(VARS_SPARE_SIZE)
 
+!ifdef $(MEMFD_BASE_ADDRESS)
+DEFINE MEMFD_BASE_ADDRESS = $(MEMFD_BASE_ADDRESS)
+!else
 DEFINE MEMFD_BASE_ADDRESS = 0x800000
+!endif
