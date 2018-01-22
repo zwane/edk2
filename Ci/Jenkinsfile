@@ -1,0 +1,37 @@
+node ('vmbuilder') {
+  wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
+
+    stage('Clean') {
+        deleteDir()
+    }
+
+    stage('Checkout') {
+        checkout(scm)
+    }
+
+    def ovmf_docker
+
+    dir('saucelabs') {
+	    stage('Building Docker') {
+            ovmf_docker = docker.build("ovmf-build:latest")
+    	}
+    }
+
+    ovmf_docker.inside {
+	    stage('Applying Patches') {
+	        sh 'cd Ci && ./build_patch.sh'
+	    }
+
+	    stage('Building BaseTools') {
+	        sh 'cd Ci && ./build_tools.sh'
+	    }
+
+	    stage('Building OVMF') {
+            sh 'cd Ci && ./build_ovmf.sh'
+        }
+
+        stage('Building Packages') {
+	        sh 'cd Ci && ./build_package.sh'
+	    }
+    }
+}}
